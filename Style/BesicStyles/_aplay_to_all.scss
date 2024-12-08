@@ -1,0 +1,15 @@
+* {
+    text-align: center;
+    color: $textcolor2;
+}
+
+body{
+    @include lines
+}
+
+h1, h2, h3 ,h4, h5 {
+    text-align: center;
+    font-size: $distance5;
+}
+
+
