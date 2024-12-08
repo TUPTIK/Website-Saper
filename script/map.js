@@ -72,7 +72,7 @@ function MapStatusSeting(map) {
         }
     }
     return mapstatus
-};
+}
 
 function TileSeting (map) {
     for (let i = 0; i < map.length; i++ ) {
@@ -124,9 +124,8 @@ function TileSeting (map) {
     }
 }
 
-
 function LClick(x,y) {
-    if (MapStatus[x][y]["flag"] === false) {
+    if (MapStatus[x][y]["flag"] === false && MapStatus[x][y]["opened"] === false && Ended === false) {
         MapStatus[x][y]["opened"] = true
         let el = document.getElementsByClassName(`${x}-${y}__img1`)
         for (let i=0;i<el.length;i+=1){
@@ -136,11 +135,18 @@ function LClick(x,y) {
         for (let i=0;i<el.length;i+=1){
             el[i].style.display = 'none';
         }
+        if (MapStatus[x][y]["content"] === 0) {OpeningEmty(x,y)}
+        NumberOfOpened ++
+
+        if (SaperMap[x][y] === 9) {Defeat()}
+
+        if (NumberOfOpened === SaperMap.length*SaperMap[0].length - Bombs) {Win()}
     }
 }
 
 function RClick(x,y) {
-    if (MapStatus[x][y]["opened"] === false) {
+    let d = false
+    if (MapStatus[x][y]["opened"] === false && MapStatus[x][y]["flag"] === false && Ended === false) {
         MapStatus[x][y]["flag"] = true
         let el = document.getElementsByClassName(`${x}-${y}__img3`)
         for (let i=0;i<el.length;i+=1){
@@ -150,5 +156,43 @@ function RClick(x,y) {
         for (let i=0;i<el.length;i+=1){
             el[i].style.display = 'none';
         }
+        d = true
+    }
+    if (MapStatus[x][y]["flag"] === true && d === false) {
+        MapStatus[x][y]["flag"] = false
+        let el = document.getElementsByClassName(`${x}-${y}__img2`)
+        for (let i=0;i<el.length;i+=1){
+            el[i].style.display = 'block';
+        }
+        el = document.getElementsByClassName(`${x}-${y}__img3`)
+        for (let i=0;i<el.length;i+=1){
+            el[i].style.display = 'none';
+        }
+    }
+}
+
+function OpeningEmty(x,y) {                                                     // 0, 1, 2,
+    const locals = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];     // 3, XY 4,
+                                                                                // 5, 6, 7,
+    for (let i = 0; i < locals.length; i ++){
+        if (x + locals[i][0] >= 0 && x + locals[i][0] < MapStatus.length && y + locals[i][1] >= 0 && y + locals[i][1] < MapStatus[0].length) {
+            LClick(locals[i][0] + x, locals[i][1] + y)
+        }
+    }
+}
+
+function Win() {
+    Ended = true;
+    el = document.getElementsByClassName("win")
+    for (let i=0;i<el.length;i+=1){
+        el[i].style.display = 'block';
+    }
+}
+
+function Defeat() {
+    Ended = true;
+    el = document.getElementsByClassName("defeat")
+    for (let i=0;i<el.length;i+=1){
+        el[i].style.display = 'block';
     }
 }
